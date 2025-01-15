@@ -1,0 +1,21 @@
+chess
+---
+board:
+//starting position:
+  a b c d e f g h
+8 r n b q k b n r
+7 p p p p p p p p
+6 . . . . . . . .
+5 . . . . . . . .
+4 . . . . . . . .
+3 . . . . . . . .
+2 P P P P P P P P
+1 R N B Q K B N R
+  a b c d e f g h
+---
+
+display capchured pieces
+
+/////////////////////////////////////////////////////////////
+error code for move validation:
+1 = cant move that piece / there is not a piece in that squere
