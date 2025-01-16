@@ -35,14 +35,14 @@ int isCheck(int color);
 int isPieceOfTheRightColor(int x, int y);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //validation functions (creates a list of valid moves for each piece)
-int isValidMovePawn();
-int isValidMoveRook();
-int isValidMoveKnight();
-int isValidMoveBishop();
-int isValidMoveQueen();
-int isValidMoveKing();
+int validMoveListPawn();
+int ValidMoveListRook();
+int ValidMoveListKnight();
+int ValidMoveListBishop();
+int ValidMoveListQueen();
+int ValidMoveListKing();
 
-int checkPawnfirstMove();
+void checkPawnfirstMove();
 int doesNotPutKingInCheck();
 
 void createMoveList();
@@ -138,7 +138,7 @@ int main(){
             //create the valid move list
                 //flush the moveList
             flushMoveList();
-                //createMoveList();
+            //createMoveList();
             scanf("%s", moveList[0]);
             //Check if the move is valid (by searching throw the moveList)
             if(findValidMove(move)){
@@ -386,14 +386,14 @@ void checkPawnFirstMove(char move[]){
 //
 void createMoveList(){
     int moveListIndex=0;
-    ValideMoveListPawn(moveListIndex);
-    ValideMoveListRook(moveListIndex);
-    ValideMoveListKnight(moveListIndex);
-    ValideMoveListBishop(moveListIndex);
-    ValideMoveListQueen(moveListIndex);
-    ValideMoveListKing(moveListIndex);
-    doesNotPutKingInCheck();
+    moveListIndex = ValideMoveListPawn(moveListIndex);
+    moveListIndex = ValideMoveListRook(moveListIndex);
+    moveListIndex = ValideMoveListKnight(moveListIndex);
+    moveListIndex = ValideMoveListBishop(moveListIndex);
+    moveListIndex = ValideMoveListQueen(moveListIndex);
+    moveListIndex = ValideMoveListKing(moveListIndex);
 
+    doesNotPutKingInCheck();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
