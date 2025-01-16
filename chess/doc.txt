@@ -21,3 +21,5 @@ error code for move validation:
 1 = cant move that piece / there is not a piece in that squere
 
 this is a test for branch
+
+this is a test for the VScode extensions
