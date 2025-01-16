@@ -12,7 +12,6 @@ chess/main.c
 #define RestOfTheBoard(string) "\x1b[44m" string "\x1b[0m"
 
 
-
 //Display function and its dependencies
 void displayBoard();
 void displayTurn();
@@ -35,7 +34,6 @@ int isCheck(int color);
 //piece color for movment validation function
 int isPieceOfTheRightColor(int x, int y);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 //validation functions (creates a list of valid moves for each piece)
 int isValidMovePawn();
 int isValidMoveRook();
@@ -325,7 +323,7 @@ int isPieceOfTheRightColor(int x, int y){
 
 //validation functions implementation
     //make global valid movement list, check list
-void validMoveListPawn(moveListIndex){
+int validMoveListPawn(int moveListIndex){
     for(int i=4; i<12; i++){
         for(int j=1; j<9; j++){
             if(board[i][j]=='p' || board[i][j]=='P'){
@@ -365,23 +363,23 @@ void validMoveListPawn(moveListIndex){
     return moveListIndex;
 }
 
-int isValideMoveRook(){
+int ValideMoveListRook(){
 
 }
 
-int isValideMoveKnight(){
+int ValideMoveListKnight(){
 
 }
 
-int isValideMoveBishop(){
+int ValideMoveListBishop(){
 
 }
 
-int isValideMoveQueen(){
+int ValideMoveListQueen(){
 
 }
 
-int isValideMoveKing(){
+int ValideMoveListKing(){
 
 }
 
@@ -398,12 +396,12 @@ void checkPawnFirstMove(char move[]){
 //
 void createMoveList(){
     int moveListIndex=0;
-    isValideMovePawn(moveListIndex);
-    isValideMoveRook(moveListIndex);
-    isValideMoveKnight(moveListIndex);
-    isValideMoveBishop(moveListIndex);
-    isValideMoveQueen(moveListIndex);
-    isValideMoveKing(moveListIndex);
+    ValideMoveListPawn(moveListIndex);
+    ValideMoveListRook(moveListIndex);
+    ValideMoveListKnight(moveListIndex);
+    ValideMoveListBishop(moveListIndex);
+    ValideMoveListQueen(moveListIndex);
+    ValideMoveListKing(moveListIndex);
     doesNotPutKingInCheck();
 
 }
