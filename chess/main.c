@@ -23,7 +23,7 @@ void fullDisplay();
 int value(char piece);
 
 //piece color function
-int color(char piece);
+int pieceColor(char piece);
 
 //captured pieces alignment function
 void alignCapturedPieces(int i, int j);
@@ -258,14 +258,14 @@ int value(char piece){
 }
 
 //piece color function impelementation
-int color(char piece){
+int pieceColor(char piece){
     if(piece>96) return 1;
     return 0;
 }
 
 //captured pieces alignment function implementation
 void alignCapturedPieces(int i, int j){
-    int side=color(board[16][0]);
+    int side=pieceColor(board[16][0]);
     printf("%d %c %c\n", side, board[14*side+0][0], board[16][0]);
     //find the location to move the new piece
     for( ; value(board[14*side+j][i]) > value(board[16][0]);i++){
