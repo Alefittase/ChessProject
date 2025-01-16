@@ -44,6 +44,7 @@ int isValidMoveBishop();
 int isValidMoveQueen();
 int isValidMoveKing();
 
+int checkPawnfirstMove();
 int doesNotPutKingInCheck();
 
 void createMoveList();
@@ -110,6 +111,7 @@ char board[20][10]={
 };
 int turn; //0 for white, 1 for black
 char moveList[550][6];
+int movedPawnFlag[2][10];
 
 //Main function
 int main(){
@@ -145,6 +147,7 @@ int main(){
                 //move the piece, and validate the move
                 movePiece(x1, y1, x2, y2);
                 moveValidated=1;
+                checkPawnFirstMove(move);
             }
             printf("1\n");
         }
@@ -322,33 +325,45 @@ int isPieceOfTheRightColor(int x, int y){
 
 //validation functions implementation
     //make global valid movement list, check list
-int isValideMovePawn(int moveListIndex){
-    char tmpArrKingCheck[5];
+void validMoveListPawn(moveListIndex){
     for(int i=4; i<12; i++){
         for(int j=1; j<9; j++){
-            if((i==5 || i==10) && board[i+2-4*turn][j]=='.' && board[i-1][j]=='.' && doesNotPutKingInCheck()==1){
-                tmpArrKingCheck[0]='p';
-                tmpArrKingCheck[1]=12+'0'-i;
-                tmpArrKingCheck[2]=j-1+'a'-1;
-                tmpArrKingCheck[3]=12+'0'-(i+2-4*turn);
-                tmpArrKingCheck[4]=j-1+'a'-1;
-                if(doesNotPutKingInCheck(tmpArrKingCheck)){
-                    moveList[moveListIndex][0]='p';
-                    moveList[moveListIndex][1]=12+'0'-i;
-                    moveList[moveListIndex][2]=j-1+'a'-1;
-                    moveList[moveListIndex][3]=12+'0'-(i+2-4*turn);
-                    moveList[moveListIndex][4]=j-1+'a'-1;
-                    moveListIndex++;
-                }
-            }
-            if(board[i-1][j]=='.' || board[i+1][j]=='.' || (turn && (board[i-1][j]>='A' && board[i-1][j]<='Z') || (board[i+1][j]>='A' && board[i+1][j]<='Z')) || (!turn && (board[i-1][j]>='a' && board[i-1][j]<='z') || (board[i+1][j]>='a' && board[i+1][j]<='z'))){
+            if(board[i][j]=='p' || board[i][j]=='P'){
+                //adding the next square
+                moveList[moveListIndex][0]='P'+32*turn;
+                moveList[moveListIndex][1]=j-1+'a';
+                moveList[moveListIndex][2]='8'-(i-4);
+                moveList[moveListIndex][3]=j-1+'a';
+                moveList[moveListIndex][4]='8'-((i-1+2*turn)-4);
+                moveListIndex++;
 
+                //adding the two squares forward if the pawn hasn't moved before
+                if(!movedPawnFlag[turn][j]){
+                    if(board[i-1+2*turn][j]=='.' && (board[i-2+4*turn][j]=='.' || (board[i-2+4*turn][j]>='a'-32*turn && board[i-2+4*turn][j]<='z'-32*turn))){
+                        moveList[moveListIndex][0]='P'+32*turn;
+                        moveList[moveListIndex][1]=j-1+'a';
+                        moveList[moveListIndex][2]='8'-(i-4);
+                        moveList[moveListIndex][3]=j-1+'a';
+                        moveList[moveListIndex][4]='8'-((i-2+4*turn)-4);
+                        moveListIndex++;
+                    }
+                }
+                //adding the previous square if the pawn has moved before
+                else{
+                    if(board[i+1-2*turn][j]=='.' || (board[i+1-2*turn][j]>='a'-32*turn && board[i+1-2*turn][j]<='z'-32*turn)){
+                        moveList[moveListIndex][0]='P'+32*turn;
+                        moveList[moveListIndex][1]=j-1+'a';
+                        moveList[moveListIndex][2]='8'-(i-4);
+                        moveList[moveListIndex][3]=j-1+'a';
+                        moveList[moveListIndex][4]='8'-((i+1-2*turn)-4);
+                        moveListIndex++;
+                    }
+                }
             }
         }
     }
     return moveListIndex;
 }
-
 
 int isValideMoveRook(){
 
@@ -374,10 +389,22 @@ int doesNotPutKingInCheck(){
 
 }
 
+void checkPawnFirstMove(char move[]){
+    if(move[0]=='P' || move[0]=='p'){
+        if(movedPawnFlag[turn][move[1]-'a'+1]!=1) movedPawnFlag[turn][move[1]-'a'+1]=1; 
+    }
+}
+
 //
 void createMoveList(){
     int moveListIndex=0;
     isValideMovePawn(moveListIndex);
+    isValideMoveRook(moveListIndex);
+    isValideMoveKnight(moveListIndex);
+    isValideMoveBishop(moveListIndex);
+    isValideMoveQueen(moveListIndex);
+    isValideMoveKing(moveListIndex);
+    doesNotPutKingInCheck();
 
 }
 
