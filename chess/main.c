@@ -187,16 +187,6 @@ int main(){
             printf("6\n");
         if(isCheck(turn)) printf("Check\n");
     }
-    // //Display the final board
-    // system("clear");
-    // displayBoard();
-    // //Display the game over message
-    // printf("Game is Over\n");
-    // printf("press any button to exit");
-    // //wait for the player to exit
-    // char tmpchr;
-    // scanf(" %c", &tmpchr);
-    // return 0;
 }
 
 
