@@ -19,7 +19,7 @@ void alignCapturedPieces(int i, int j);
 int isCheck(int color);
 
 //piece color for movment validation function
-int isPieceOfTheRightColor();
+int isPieceOfTheRightColor(int x, int y);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //validation functions (creates a list of valid moves for each piece)
@@ -66,7 +66,7 @@ int isGameOver(){
 void flushMoveList();
 
 //Global variables
-char boardHistory[125][20][10];
+char boardHistory[12500][20][10];
 int moveNumber=0;
     //Initialize the board
 char board[20][10]={
@@ -93,12 +93,15 @@ char moveList[550][6];
 
 //Main function
 int main(){
+    //While the game is not over
     while(1){
         //Display the board
         display();
-        //While the game is not over
+        //Copy the board to the history
         copyToHistory();
+        //Increment the move number
         moveNumber++;
+        //While the move is not validated get the player's input
         int moveValidated=0;
         while(!moveValidated){
             int x1, x2, y1, y2, valid=0;
@@ -108,15 +111,16 @@ int main(){
             printf("Enter the move: ");
             scanf("%s", move);
             //check for manual exit
-            if(move[0]=='E' && move[1]=='n' && move[2]=='d') return 0;
+            if(move[0]=='E' && move[1]=='n' && move[2]=='d') break;
             //convert input to the board coordinates
             x1=move[1]-'a'+1; y1=12-(move[2]-'0');
             x2=move[3]-'a'+1; y2=12-(move[4]-'0');
-
+            //creat the valid move list
             //createMoveList();
             scanf("%s", moveList[0]);
-            //Check if the move is valid, move the piece
+            //Check if the move is valid (by searching throw the moveList)
             if(findValidMove(move)){
+                //move the piece, and validate the move
                 movePiece(x1, y1, x2, y2);
                 moveValidated=1;
             }
@@ -125,7 +129,7 @@ int main(){
         alignCapturedPieces(0,0);
         //Check if the game is over
         //if the game is over
-            //break the loop
+            //break the main loop
         if(isGameOver()){
             switch (isGameOver()){
             case 1:
@@ -156,8 +160,12 @@ int main(){
             //callout the check
         if(isCheck(turn)) printf("Check\n");
     }
+    //Display the final board
+    displayBoard();
+    //Display the game over message
     printf("Game is Over\n");
     printf("press any button to exit");
+    //wait for the player to exit
     char tmpchr;
     scanf(" %c", &tmpchr);
     return 0;
@@ -165,6 +173,7 @@ int main(){
 
 //Display functions implementation
 void displayBoard(){
+    //print the board
     for(int i=0; i<16; i++){
         printf("  ");
         for(int j=0; j<10; j++)
@@ -174,12 +183,15 @@ void displayBoard(){
 }
 
 void displayTurn(){
+    //print the turn
     if(turn==0) printf("White's turn");
     else printf("Black's turn");
     printf(" (%d)\n", moveNumber);
 }
 
 void display(){
+    //clear the screen and show the new srceen
+    system("clear");
     displayBoard();
     displayTurn();
 }
@@ -198,12 +210,12 @@ int value(char piece){
 void alignCapturedPieces(int i, int j){
     //find the location to move the new piece
     for( ; value(board[14*turn+j][i]) > value(board[16][0]);i++) if(i==10){ i=0; j++; }
-    //
+    //put the piece in the desired location and move the next captured piece to the top of the captured pieces buffer
     board[16][1]=board[14*turn+j][i];
     board[14*turn+j][i]=board[16][0];
     board[16][0]=board[16][1];
     board[16][1]='.';
-    //
+    //go to the next line if the current line is full
     if(board[14*turn+j][i]=='.'){
         board[14*turn+1][9]=48;
         board[14*turn+1][8]=48;
@@ -217,8 +229,7 @@ void alignCapturedPieces(int i, int j){
         }
         return;
     }
-
-    //l
+    //recursive call to align the next captured piece in case the piece is not the last one
     alignCapturedPieces(i, j);
     return;
 }
