@@ -256,20 +256,23 @@ int pieceColor(char piece){
 //captured pieces alignment function implementation
 void alignCapturedPieces(int i, int j){
     int side=pieceColor(board[16][0]);
-    printf("%d %c %c\n", side, board[14*side+0][0], board[16][0]);
+
+    //printf("%d %c %c\n", side, board[14*side+0][0], board[16][0]);
+
     //find the location to move the new piece
     for( ; value(board[14*side+j][i]) > value(board[16][0]);i++){
         if(i==10){ i=0; j++; }
         printf("%d\n", i);
     }
-    fullDisplay();
+
+    // fullDisplay();
     //put the piece in the desired location and move the next captured piece to the top of the captured pieces buffer
     board[16][1]=board[14*side+j][i];
     board[14*side+j][i]=board[16][0];
     board[16][0]=board[16][1];
     board[16][1]='.';
 
-    fullDisplay();
+    // fullDisplay();
     //go to the next line if the current line is full
     if(board[14*side+j][i]=='.'){
         board[14*side+1][9]=48;
@@ -353,23 +356,23 @@ int validMoveListPawn(int moveListIndex){
     return moveListIndex;
 }
 
-int ValideMoveListRook(){
+int validMoveListRook(){
 
 }
 
-int ValideMoveListKnight(){
+int validMoveListKnight(){
 
 }
 
-int ValideMoveListBishop(){
+int validMoveListBishop(){
 
 }
 
-int ValideMoveListQueen(){
+int validMoveListQueen(){
 
 }
 
-int ValideMoveListKing(){
+int validMoveListKing(){
 
 }
 
@@ -386,12 +389,13 @@ void checkPawnFirstMove(char move[]){
 //
 void createMoveList(){
     int moveListIndex=0;
-    moveListIndex = ValideMoveListPawn(moveListIndex);
-    moveListIndex = ValideMoveListRook(moveListIndex);
-    moveListIndex = ValideMoveListKnight(moveListIndex);
-    moveListIndex = ValideMoveListBishop(moveListIndex);
-    moveListIndex = ValideMoveListQueen(moveListIndex);
-    moveListIndex = ValideMoveListKing(moveListIndex);
+    
+    moveListIndex = validMoveListPawn(moveListIndex);
+    moveListIndex = validMoveListRook(moveListIndex);
+    moveListIndex = validMoveListKnight(moveListIndex);
+    moveListIndex = validMoveListBishop(moveListIndex);
+    moveListIndex = validMoveListQueen(moveListIndex);
+    moveListIndex = validMoveListKing(moveListIndex);
 
     doesNotPutKingInCheck();
 }
