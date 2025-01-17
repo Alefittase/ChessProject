@@ -29,7 +29,7 @@ int pieceColor(char piece);
 void alignCapturedPieces(int i, int j);
 
 //Check function
-int isCheck(int color);
+int isCheck();
 
 //piece color for movment validation function
 int isPieceOfTheRightColor(int x, int y);
@@ -301,13 +301,6 @@ void alignCapturedPieces(int i, int j){
 }
 
 //----------------------------------------------------------------------------------------------------------
-//Check function implementation
-int isCheck(int color){
-    return 0;
-    /*check if the king of the given color is in check*/
-    //return 1 if in check
-    //return 0 if not in check
-}
 
 //piece movement validation functions implementation
 int isPieceOfTheRightColor(int x, int y){
@@ -321,6 +314,35 @@ int isPieceOfTheRightColor(int x, int y){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Check function implementation
+int isCheck(){
+    /*check if the king of the current turn is in check*/
+    //return 1 if in check
+    //return 0 if not in check
+    int k1, k2, flag=0;
+    //find the current turn's king, save the coordinates in k1 and k2
+    for(int i=4; i<12; i++){
+        for(int j=1; j<9; j++){
+            if(board[i][j]=='K'-32*turn){
+                k1=j-1+'a';
+                k2='8'-(i-4);
+            }
+        }
+    }
+    //switch the turn
+    turn=!turn;
+    createMoveList();
+    //check if the opponent would have the opportunity to hit where the king is
+    for(int i=0; moveList[i][0]; i++){
+        if(moveList[i][3]==k1 && moveList[i][4]==k2){
+            flag=1;
+            break;
+        }
+    }
+    //return the turn as it was
+    turn=!turn;
+    return flag;
+}
 
 //validation functions implementation
     //make global valid movement list, check list
@@ -780,13 +802,41 @@ int validMoveListKing(int moveListIndex){
 }
 
 int doesNotPutKingInCheck(){
-
+    char tmpBoard[20][10];
+    int tmpX1, tmpX2, tmpY1, tmpY2;
+    //for every move listed in moveList,
+    for(int k=0; moveList[k][0]; k++){
+        //copy the current board into tmbBoard
+        for(int i=0; i<20; i++){
+            for(int j=0; j<10; j++){
+                tmpBoard[i][j]=board[i][j];
+            }
+        }
+        //move the piece
+        tmpX1=moveList[k][1]-'a'+1; tmpY1=12-(moveList[k][2]-'0');
+        tmpX2=moveList[k][3]-'a'+1; tmpY2=12-(moveList[k][4]-'0');
+        movePiece(tmpX1, tmpY1, tmpX2, tmpY2);
+        //if it was check, then the move isn't valid and therefore is deleted* from the moveList
+        if(isCheck()){
+            moveList[k][0]=' ';
+        }
+        //return the board into the previous state
+        for(int i=0; i<20; i++){
+            for(int j=0; j<10; j++){
+                board[i][j]=tmpBoard[i][j];
+            }
+        }
+    }
 }
 
 void checkPawnFirstMove(char move[]){
     if(move[0]=='P' || move[0]=='p'){
         if(movedPawnFlag[turn][move[1]-'a'+1]!=1) movedPawnFlag[turn][move[1]-'a'+1]=1; 
     }
+}
+
+int isNotOutOfFrame(){
+
 }
 
 //
@@ -798,8 +848,7 @@ void createMoveList(){
     validMoveListBishop(moveListIndex);
     validMoveListQueen(moveListIndex);
     validMoveListKing(moveListIndex);
-    doesNotPutKingInCheck();
-
+    isNotOutOfFrame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
