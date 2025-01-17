@@ -326,7 +326,7 @@ int isPieceOfTheRightColor(int x, int y){
 int validMoveListPawn(int moveListIndex){
     for(int i=4; i<12; i++){
         for(int j=1; j<9; j++){
-            if(board[i][j]=='p' || board[i][j]=='P'){
+            if(board[i][j]=='P'+32*turn){
                 //adding the next square
                 moveList[moveListIndex][0]='P'+32*turn;
                 moveList[moveListIndex][1]=j-1+'a';
@@ -363,8 +363,58 @@ int validMoveListPawn(int moveListIndex){
     return moveListIndex;
 }
 
-int ValideMoveListRook(){
-
+int validMoveListRook(moveListIndex){
+    for(int i=4; i<12; i++){
+        for(int j=1; j<9; j++){
+            if(board[i][j]=='R'+32*turn){
+                for(int r=i+1; r<12; r++){
+                    if(board[r][j]=='.' || (board[r][j]>='a'-32*turn && board[r][j]<='z'-32*turn)){
+                        moveList[moveListIndex][0]='R'+32*turn;
+                        moveList[moveListIndex][1]=j-1+'a';
+                        moveList[moveListIndex][2]='8'-(i-4);
+                        moveList[moveListIndex][3]=j-1+'a';
+                        moveList[moveListIndex][4]='8'-(r-4);
+                        moveListIndex++;
+                    }
+                    if(board[r][j]!='.') break;
+                }
+                for(int r=i-1; r>3; r--){
+                    if(board[r][j]=='.' || (board[r][j]>='a'-32*turn && board[r][j]<='z'-32*turn)){
+                        moveList[moveListIndex][0]='R'+32*turn;
+                        moveList[moveListIndex][1]=j-1+'a';
+                        moveList[moveListIndex][2]='8'-(i-4);
+                        moveList[moveListIndex][3]=j-1+'a';
+                        moveList[moveListIndex][4]='8'-(r-4);
+                        moveListIndex++;
+                    }
+                    if(board[r][j]!='.') break;
+                }
+                for(int s=j+1; s<9; s++){
+                    if(board[i][s]=='.' || (board[i][s]>='a'-32*turn && board[i][s]<='z'-32*turn)){
+                        moveList[moveListIndex][0]='R'+32*turn;
+                        moveList[moveListIndex][1]=j-1+'a';
+                        moveList[moveListIndex][2]='8'-(i-4);
+                        moveList[moveListIndex][3]=s-1+'a';
+                        moveList[moveListIndex][4]='8'-(i-4);
+                        moveListIndex++;
+                    }
+                    if(board[i][s]!='.') break;
+                }
+                for(int s=j-1; s>0; s--){
+                    if(board[i][s]=='.' || (board[i][s]>='a'-32*turn && board[i][s]<='z'-32*turn)){
+                        moveList[moveListIndex][0]='R'+32*turn;
+                        moveList[moveListIndex][1]=j-1+'a';
+                        moveList[moveListIndex][2]='8'-(i-4);
+                        moveList[moveListIndex][3]=s-1+'a';
+                        moveList[moveListIndex][4]='8'-(i-4);
+                        moveListIndex++;
+                    }
+                    if(board[i][s]!='.') break;
+                }
+            }
+        }
+    }
+    return moveListIndex;
 }
 
 int ValideMoveListKnight(){
