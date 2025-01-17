@@ -44,6 +44,7 @@ int validMoveListKing();
 
 void checkPawnFirstMove();
 int doesNotPutKingInCheck();
+int isNotOutOfFrame();
 
 void createMoveList();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,8 +423,47 @@ int validMoveListRook(moveListIndex){
     return moveListIndex;
 }
 
-int validMoveListKnight(){
-
+int validMoveListKnight(int moveListIndex){
+    for(int i=4; i<12; i++){
+        for(int j=1; j<9; j++){
+            //find knights of the right turn
+            if(board[i][j]=='K'+32*turn){
+                if(i+3<12 && j+2<9 && (board[i+3][j+2]=='.' || (board[i+3][j+2]>='a'-32*turn && board[i+3][j+2]<='z'-32*turn))){
+                    moveList[moveListIndex][0]='R'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j+2)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+3)-4);
+                    moveListIndex++;
+                }
+                if(i+3<12 && j-2>0 && (board[i+3][j-2]=='.' || (board[i+3][j-2]>='a'-32*turn && board[i+3][j-2]<='z'-32*turn))){
+                    moveList[moveListIndex][0]='R'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j-2)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+3)-4);
+                    moveListIndex++;
+                }
+                if(i-3>3 && j+2<9 && (board[i-3][j+2]=='.' || (board[i-3][j+2]>='a'-32*turn && board[i-3][j+2]<='z'-32*turn))){
+                    moveList[moveListIndex][0]='R'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j+2)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-3)-4);
+                    moveListIndex++;
+                }
+                if(i-3>3 && j-2>0 && (board[i-3][j-2]=='.' || (board[i-3][j-2]>='a'-32*turn && board[i-3][j-2]<='z'-32*turn))){
+                    moveList[moveListIndex][0]='R'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j-2)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-3)-4);
+                    moveListIndex++;
+                }
+            }
+        }
+    }
+    return moveListIndex;
 }
 
 int validMoveListBishop(int moveListIndex){
