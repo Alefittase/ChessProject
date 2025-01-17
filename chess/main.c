@@ -35,14 +35,14 @@ int isCheck(int color);
 int isPieceOfTheRightColor(int x, int y);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //validation functions (creates a list of valid moves for each piece)
-int isValidMovePawn();
-int isValidMoveRook();
-int isValidMoveKnight();
-int isValidMoveBishop();
-int isValidMoveQueen();
-int isValidMoveKing();
+int validMoveListPawn();
+int validMoveListRook();
+int validMoveListKnight();
+int validMoveListBishop();
+int validMoveListQueen();
+int validMoveListKing();
 
-int checkPawnfirstMove();
+void checkPawnFirstMove();
 int doesNotPutKingInCheck();
 
 void createMoveList();
@@ -366,7 +366,9 @@ int validMoveListPawn(int moveListIndex){
 int validMoveListRook(moveListIndex){
     for(int i=4; i<12; i++){
         for(int j=1; j<9; j++){
+            //find rooks of the right turn
             if(board[i][j]=='R'+32*turn){
+                //go forwards or backwards and check for empty or enemy squares and add them
                 for(int r=i+1; r<12; r++){
                     if(board[r][j]=='.' || (board[r][j]>='a'-32*turn && board[r][j]<='z'-32*turn)){
                         moveList[moveListIndex][0]='R'+32*turn;
@@ -376,6 +378,7 @@ int validMoveListRook(moveListIndex){
                         moveList[moveListIndex][4]='8'-(r-4);
                         moveListIndex++;
                     }
+                    //if found an unempty square, stop moving in that direction
                     if(board[r][j]!='.') break;
                 }
                 for(int r=i-1; r>3; r--){
@@ -389,6 +392,7 @@ int validMoveListRook(moveListIndex){
                     }
                     if(board[r][j]!='.') break;
                 }
+                //go to the right
                 for(int s=j+1; s<9; s++){
                     if(board[i][s]=='.' || (board[i][s]>='a'-32*turn && board[i][s]<='z'-32*turn)){
                         moveList[moveListIndex][0]='R'+32*turn;
@@ -400,6 +404,7 @@ int validMoveListRook(moveListIndex){
                     }
                     if(board[i][s]!='.') break;
                 }
+                //go to the left
                 for(int s=j-1; s>0; s--){
                     if(board[i][s]=='.' || (board[i][s]>='a'-32*turn && board[i][s]<='z'-32*turn)){
                         moveList[moveListIndex][0]='R'+32*turn;
@@ -417,19 +422,86 @@ int validMoveListRook(moveListIndex){
     return moveListIndex;
 }
 
-int ValideMoveListKnight(){
+int validMoveListKnight(){
 
 }
 
-int ValideMoveListBishop(){
+int validMoveListBishop(int moveListIndex){
+    for(int i=4; i<12; i++){
+        for(int j=1; j<9; j++){
+            //find bishops of the right turn
+            if(board[i][j]=='B'+32*turn){
+                //go South-East and check for empty or enemy squares and add them
+                for(int r=i+1; r<12; r++){
+                    for(int s=j+1; s<9; s++){
+                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                            moveList[moveListIndex][0]='B'+32*turn;
+                            moveList[moveListIndex][1]=j-1+'a';
+                            moveList[moveListIndex][2]='8'-(i-4);
+                            moveList[moveListIndex][3]=s-1+'a';
+                            moveList[moveListIndex][4]='8'-(r-4);
+                            moveListIndex++;
+                        }
+                        //if found an unempty square, stop moving in that direction
+                        if(board[r][s]!='.') break;
+                    }
+                }
+                //go South-West
+                for(int r=i+1; r<12; r++){
+                    for(int s=j-1; s>0; s--){
+                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                            moveList[moveListIndex][0]='B'+32*turn;
+                            moveList[moveListIndex][1]=j-1+'a';
+                            moveList[moveListIndex][2]='8'-(i-4);
+                            moveList[moveListIndex][3]=s-1+'a';
+                            moveList[moveListIndex][4]='8'-(r-4);
+                            moveListIndex++;
+                        }
+                        //if found an unempty square, stop moving in that direction
+                        if(board[r][s]!='.') break;
+                    }
+                }
+                //go North-East
+                for(int r=i-1; r>3; r--){
+                    for(int s=j+1; s<9; s++){
+                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                            moveList[moveListIndex][0]='B'+32*turn;
+                            moveList[moveListIndex][1]=j-1+'a';
+                            moveList[moveListIndex][2]='8'-(i-4);
+                            moveList[moveListIndex][3]=s-1+'a';
+                            moveList[moveListIndex][4]='8'-(r-4);
+                            moveListIndex++;
+                        }
+                        //if found an unempty square, stop moving in that direction
+                        if(board[r][s]!='.') break;
+                    }
+                }
+                //go North-West
+                for(int r=i-1; r>3; r--){
+                    for(int s=j-1; s>0; s--){
+                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                            moveList[moveListIndex][0]='B'+32*turn;
+                            moveList[moveListIndex][1]=j-1+'a';
+                            moveList[moveListIndex][2]='8'-(i-4);
+                            moveList[moveListIndex][3]=s-1+'a';
+                            moveList[moveListIndex][4]='8'-(r-4);
+                            moveListIndex++;
+                        }
+                        //if found an unempty square, stop moving in that direction
+                        if(board[r][s]!='.') break;
+                    }
+                }
+            }
+        }
+    }
+    return moveListIndex;
+}
+
+int validMoveListQueen(){
 
 }
 
-int ValideMoveListQueen(){
-
-}
-
-int ValideMoveListKing(){
+int validMoveListKing(){
 
 }
 
@@ -446,12 +518,12 @@ void checkPawnFirstMove(char move[]){
 //
 void createMoveList(){
     int moveListIndex=0;
-    ValideMoveListPawn(moveListIndex);
-    ValideMoveListRook(moveListIndex);
-    ValideMoveListKnight(moveListIndex);
-    ValideMoveListBishop(moveListIndex);
-    ValideMoveListQueen(moveListIndex);
-    ValideMoveListKing(moveListIndex);
+    validMoveListPawn(moveListIndex);
+    validMoveListRook(moveListIndex);
+    validMoveListKnight(moveListIndex);
+    validMoveListBishop(moveListIndex);
+    validMoveListQueen(moveListIndex);
+    validMoveListKing(moveListIndex);
     doesNotPutKingInCheck();
 
 }
