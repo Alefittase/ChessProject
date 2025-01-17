@@ -705,8 +705,78 @@ int validMoveListQueen(int moveListIndex){
     return moveListIndex;
 }
 
-int validMoveListKing(){
-
+int validMoveListKing(int moveListIndex){
+    for(int i=4; i<12; i++){
+        for(int j=1; j<9; j++){
+            if(board[i][j]=='K'+32*turn){
+                if(board[i+1][j]=='.' || (board[i+1][j]>='a'-32*turn && board[i+1][j]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=j-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+1)-4);
+                    moveListIndex++;
+                }
+                if(board[i-1][j]=='.' || (board[i-1][j]>='a'-32*turn && board[i-1][j]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=j-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-1)-4);
+                    moveListIndex++;
+                }
+                if(board[i][j+1]=='.' || (board[i][j+1]>='a'-32*turn && board[i][j+1]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j+1)-1+'a';
+                    moveList[moveListIndex][4]='8'-(i-4);
+                    moveListIndex++;
+                }
+                if(board[i][j-1]=='.' || (board[i][j-1]>='a'-32*turn && board[i][j-1]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j-1)-1+'a';
+                    moveList[moveListIndex][4]='8'-(i-4);
+                    moveListIndex++;
+                }
+                if(board[i+1][j+1]=='.' || (board[i+1][j+1]>='a'-32*turn && board[i+1][j+1]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j+1)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+1)-4);
+                    moveListIndex++;
+                }
+                if(board[i-1][j+1]=='.' || (board[i-1][j+1]>='a'-32*turn && board[i-1][j+1]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j+1)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-1)-4);
+                    moveListIndex++;
+                }
+                if(board[i+1][j-1]=='.' || (board[i+1][j-1]>='a'-32*turn && board[i+1][j-1]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j-1)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+1)-4);
+                    moveListIndex++;
+                }
+                if(board[i-1][j-1]=='.' || (board[i-1][j-1]>='a'-32*turn && board[i-1][j-1]<='z'-32*turn)){
+                    moveList[moveListIndex][0]='K'+32*turn;
+                    moveList[moveListIndex][1]=j-1+'a';
+                    moveList[moveListIndex][2]='8'-(i-4);
+                    moveList[moveListIndex][3]=(j-1)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-1)-4);
+                    moveListIndex++;
+                }
+            }
+        }
+    }
+    return moveListIndex;
 }
 
 int doesNotPutKingInCheck(){
