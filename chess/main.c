@@ -35,14 +35,14 @@ int isCheck(int color);
 int isPieceOfTheRightColor(int x, int y);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //validation functions (creates a list of valid moves for each piece)
-int isValidMovePawn();
-int isValidMoveRook();
-int isValidMoveKnight();
-int isValidMoveBishop();
-int isValidMoveQueen();
-int isValidMoveKing();
+int validMoveListPawn();
+int ValidMoveListRook();
+int ValidMoveListKnight();
+int ValidMoveListBishop();
+int ValidMoveListQueen();
+int ValidMoveListKing();
 
-int checkPawnfirstMove();
+void checkPawnfirstMove();
 int doesNotPutKingInCheck();
 
 void createMoveList();
@@ -138,7 +138,7 @@ int main(){
             //create the valid move list
                 //flush the moveList
             flushMoveList();
-                //createMoveList();
+            //createMoveList();
             scanf("%s", moveList[0]);
             //Check if the move is valid (by searching throw the moveList)
             if(findValidMove(move)){
@@ -187,16 +187,6 @@ int main(){
             printf("6\n");
         if(isCheck(turn)) printf("Check\n");
     }
-    // //Display the final board
-    // system("clear");
-    // displayBoard();
-    // //Display the game over message
-    // printf("Game is Over\n");
-    // printf("press any button to exit");
-    // //wait for the player to exit
-    // char tmpchr;
-    // scanf(" %c", &tmpchr);
-    // return 0;
 }
 
 
@@ -266,20 +256,23 @@ int pieceColor(char piece){
 //captured pieces alignment function implementation
 void alignCapturedPieces(int i, int j){
     int side=pieceColor(board[16][0]);
-    printf("%d %c %c\n", side, board[14*side+0][0], board[16][0]);
+
+    //printf("%d %c %c\n", side, board[14*side+0][0], board[16][0]);
+
     //find the location to move the new piece
     for( ; value(board[14*side+j][i]) > value(board[16][0]);i++){
         if(i==10){ i=0; j++; }
         printf("%d\n", i);
     }
-    fullDisplay();
+
+    // fullDisplay();
     //put the piece in the desired location and move the next captured piece to the top of the captured pieces buffer
     board[16][1]=board[14*side+j][i];
     board[14*side+j][i]=board[16][0];
     board[16][0]=board[16][1];
     board[16][1]='.';
 
-    fullDisplay();
+    // fullDisplay();
     //go to the next line if the current line is full
     if(board[14*side+j][i]=='.'){
         board[14*side+1][9]=48;
@@ -363,23 +356,23 @@ int validMoveListPawn(int moveListIndex){
     return moveListIndex;
 }
 
-int ValideMoveListRook(){
+int validMoveListRook(){
 
 }
 
-int ValideMoveListKnight(){
+int validMoveListKnight(){
 
 }
 
-int ValideMoveListBishop(){
+int validMoveListBishop(){
 
 }
 
-int ValideMoveListQueen(){
+int validMoveListQueen(){
 
 }
 
-int ValideMoveListKing(){
+int validMoveListKing(){
 
 }
 
@@ -396,14 +389,15 @@ void checkPawnFirstMove(char move[]){
 //
 void createMoveList(){
     int moveListIndex=0;
-    ValideMoveListPawn(moveListIndex);
-    ValideMoveListRook(moveListIndex);
-    ValideMoveListKnight(moveListIndex);
-    ValideMoveListBishop(moveListIndex);
-    ValideMoveListQueen(moveListIndex);
-    ValideMoveListKing(moveListIndex);
-    doesNotPutKingInCheck();
+    
+    moveListIndex = validMoveListPawn(moveListIndex);
+    moveListIndex = validMoveListRook(moveListIndex);
+    moveListIndex = validMoveListKnight(moveListIndex);
+    moveListIndex = validMoveListBishop(moveListIndex);
+    moveListIndex = validMoveListQueen(moveListIndex);
+    moveListIndex = validMoveListKing(moveListIndex);
 
+    doesNotPutKingInCheck();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
