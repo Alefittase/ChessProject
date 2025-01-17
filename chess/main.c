@@ -471,66 +471,73 @@ int validMoveListBishop(int moveListIndex){
         for(int j=1; j<9; j++){
             //find bishops of the right turn
             if(board[i][j]=='B'+32*turn){
-                //go South-East and check for empty or enemy squares and add them
-                for(int r=i+1; r<12; r++){
-                    for(int s=j+1; s<9; s++){
-                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
-                            moveList[moveListIndex][0]='B'+32*turn;
-                            moveList[moveListIndex][1]=j-1+'a';
-                            moveList[moveListIndex][2]='8'-(i-4);
-                            moveList[moveListIndex][3]=s-1+'a';
-                            moveList[moveListIndex][4]='8'-(r-4);
-                            moveListIndex++;
+                //if bishop is in the left side of the board
+                if(j>=1 && j<=4){
+                    //go North-East and check for empty or enemy squares and add them
+                    for(int r=i-1; r>3; r--){
+                        for(int s=j+1; s<9; s++){
+                            if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                                moveList[moveListIndex][0]='B'+32*turn;
+                                moveList[moveListIndex][1]=j-1+'a';
+                                moveList[moveListIndex][2]='8'-(i-4);
+                                moveList[moveListIndex][3]=s-1+'a';
+                                moveList[moveListIndex][4]='8'-(r-4);
+                                moveListIndex++;
+                            }
+                            //if found an unempty square, stop moving in that direction
+                            if(board[r][s]!='.') break;
                         }
-                        //if found an unempty square, stop moving in that direction
-                        if(board[r][s]!='.') break;
+                    }
+                    //go South-East
+                    for(int r=i+1; r<12; r++){
+                        for(int s=j+1; s<9; s++){
+                            if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                                moveList[moveListIndex][0]='B'+32*turn;
+                                moveList[moveListIndex][1]=j-1+'a';
+                                moveList[moveListIndex][2]='8'-(i-4);
+                                moveList[moveListIndex][3]=s-1+'a';
+                                moveList[moveListIndex][4]='8'-(r-4);
+                                moveListIndex++;
+                            }
+                            //if found an unempty square, stop moving in that direction
+                            if(board[r][s]!='.') break;
+                        }
                     }
                 }
-                //go South-West
-                for(int r=i+1; r<12; r++){
-                    for(int s=j-1; s>0; s--){
-                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
-                            moveList[moveListIndex][0]='B'+32*turn;
-                            moveList[moveListIndex][1]=j-1+'a';
-                            moveList[moveListIndex][2]='8'-(i-4);
-                            moveList[moveListIndex][3]=s-1+'a';
-                            moveList[moveListIndex][4]='8'-(r-4);
-                            moveListIndex++;
+
+                //if bishop is in the right side of the board
+                if(j>=5 && j<=8){
+                    //go North-West
+                    for(int r=i-1; r>3; r--){
+                        for(int s=j-1; s>0; s--){
+                            if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                                moveList[moveListIndex][0]='B'+32*turn;
+                                moveList[moveListIndex][1]=j-1+'a';
+                                moveList[moveListIndex][2]='8'-(i-4);
+                                moveList[moveListIndex][3]=s-1+'a';
+                                moveList[moveListIndex][4]='8'-(r-4);
+                                moveListIndex++;
+                            }
+                            //if found an unempty square, stop moving in that direction
+                            if(board[r][s]!='.') break;
                         }
-                        //if found an unempty square, stop moving in that direction
-                        if(board[r][s]!='.') break;
                     }
-                }
-                //go North-East
-                for(int r=i-1; r>3; r--){
-                    for(int s=j+1; s<9; s++){
-                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
-                            moveList[moveListIndex][0]='B'+32*turn;
-                            moveList[moveListIndex][1]=j-1+'a';
-                            moveList[moveListIndex][2]='8'-(i-4);
-                            moveList[moveListIndex][3]=s-1+'a';
-                            moveList[moveListIndex][4]='8'-(r-4);
-                            moveListIndex++;
+                    //go South-West
+                    for(int r=i+1; r<12; r++){
+                        for(int s=j-1; s>0; s--){
+                            if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
+                                moveList[moveListIndex][0]='B'+32*turn;
+                                moveList[moveListIndex][1]=j-1+'a';
+                                moveList[moveListIndex][2]='8'-(i-4);
+                                moveList[moveListIndex][3]=s-1+'a';
+                                moveList[moveListIndex][4]='8'-(r-4);
+                                moveListIndex++;
+                            }
+                            //if found an unempty square, stop moving in that direction
+                            if(board[r][s]!='.') break;
                         }
-                        //if found an unempty square, stop moving in that direction
-                        if(board[r][s]!='.') break;
                     }
-                }
-                //go North-West
-                for(int r=i-1; r>3; r--){
-                    for(int s=j-1; s>0; s--){
-                        if(board[r][s]=='.' || (board[r][s]>='a'-32*turn && board[r][s]<='z'-32*turn)){
-                            moveList[moveListIndex][0]='B'+32*turn;
-                            moveList[moveListIndex][1]=j-1+'a';
-                            moveList[moveListIndex][2]='8'-(i-4);
-                            moveList[moveListIndex][3]=s-1+'a';
-                            moveList[moveListIndex][4]='8'-(r-4);
-                            moveListIndex++;
-                        }
-                        //if found an unempty square, stop moving in that direction
-                        if(board[r][s]!='.') break;
-                    }
-                }
+                } 
             }
         }
     }
