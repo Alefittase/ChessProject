@@ -836,7 +836,11 @@ void checkPawnFirstMove(char move[]){
 }
 
 int isNotOutOfFrame(){
-
+    //look for any moves that would go out of frame, delete* them
+    for(int i=0; moveList[i][0]; i++){
+        if(moveList[i][3]<'a' || moveList[i][3]>'h' || moveList[i][4]<'1' || moveList[i][4]>'8')
+            moveList[i][0]=' ';
+    }
 }
 
 //
