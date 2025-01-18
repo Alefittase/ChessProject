@@ -1,6 +1,3 @@
-/*
-chess/main.c
-*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,7 +7,6 @@ chess/main.c
 #define BlackEven(string) "\x1b[47m\x1b[92m" string "\x1b[0m"
 #define WhiteEven(string) "\x1b[47m\x1b[31m" string "\x1b[0m"
 #define RestOfTheBoard(string) "\x1b[44m" string "\x1b[0m"
-
 
 //Display function and its dependencies
 void displayBoard();
@@ -28,8 +24,6 @@ int pieceColor(char piece);
 //captured pieces alignment function
 void alignCapturedPieces(int i, int j);
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //validation functions (creates a list of valid moves for each piece)
 int validMoveListPawn();
 int validMoveListRook();
@@ -45,7 +39,6 @@ void checkPawnFirstMove();
 int isNotOutOfFrame();
 
 void createMoveList();
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Move functions
 int findValidMove(char move[]);
@@ -120,8 +113,11 @@ int main(){
         copyToHistory();
         //Increment the move number
         moveNumber++;
+        //if the king is in check
+            //callout the check
+        if(isCheck()) printf("Check\n");
         //While the move is not validated get the player's input
-        int moveValidated=0;
+        int moveValidated=0, End=0;
         while(!moveValidated){
             int x1, x2, y1, y2, valid=0;
             char move[5];
@@ -130,7 +126,10 @@ int main(){
             printf("Enter the move: ");
             scanf("%s", move);
             //check for manual exit
-            if(move[0]=='E' && move[1]=='n' && move[2]=='d') break;
+            if(move[0]=='E' && move[1]=='n' && move[2]=='d'){
+                End=1;
+                break;
+            }
             //convert input to the board coordinates
             x1=move[1]-'a'+1; y1=12-(move[2]-'0');
             x2=move[3]-'a'+1; y2=12-(move[4]-'0');
@@ -152,11 +151,14 @@ int main(){
         //Check if the game is over
         //if the game is over
             //break the main loop
+        //Switch the turn
+        turn=!turn;
         if(isGameOver()){
+            display();
             switch (isGameOver()){
             case 1:
                 printf("the game ended in a Checkmate the winner is:\n");
-                if(turn) printf("Black\n");
+                if(!turn) printf("Black\n");
                 else printf("white\n");
                 break;
             case 2:
@@ -174,11 +176,8 @@ int main(){
             };
             if(!doesWantToPlayAgain()) return 0;
         }
-        //Switch the turn
-        turn=!turn;
-        //if the apponent's king is in check
-            //callout the check
-        if(isCheck(turn)) printf("Check\n");
+        if(End) if(!doesWantToPlayAgain()) return 0;
+
     }
     return 1;
 }
@@ -280,13 +279,6 @@ void alignCapturedPieces(int i, int j){
     alignCapturedPieces(i, j);
     return;
 }
-
-//----------------------------------------------------------------------------------------------------------
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Check function implementation
 
 //validation functions implementation
     //make global valid movement list, check list
@@ -803,6 +795,7 @@ int validMoveListKing(int moveListIndex){
     return moveListIndex;
 }
 
+//Check function implementation
 int isCheck(){
     /*check if the king of the current turn is in check*/
     //return 1 if in check
@@ -831,7 +824,7 @@ int isCheck(){
     //check if the opponent would have the opportunity to hit where the king is
     for(int i=0; moveList[i][0]; i++){
         if(moveList[i][3]==k1 && moveList[i][4]==k2){
-            printf("%d %c%c\n", i, k1, k2);
+            //printf("%d %c%c\n", i, k1, k2);
             flag=1;
             break;
         }
@@ -909,11 +902,6 @@ void createMoveList(){
     isNotOutOfFrame();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 //move function implementation
 int findValidMove(char move[]){
     int i=0;
@@ -946,7 +934,6 @@ void copyToHistory(){
     for(int i=0; i<20; i++)
         for(int j=0; j<10; j++)
             boardHistory[moveNumber][i][j]=board[i][j];
-        //    *(*(*(pointer+moveNumber)+i)+j)=board[i][j];
 }
 
 //number of the pieces still on the board function implementation
@@ -961,7 +948,9 @@ int numberOfPiecesOnBoard(){
 //game over function dependencies implementation
 int isStalemate(){
     //checks if there are any valid moves
-    if(moveList[0][0]) return 0;
+    for(int i=0; i<12500; i++)
+        if(moveList[i][0]!=' ' && moveList[i][0]!=0)
+            return 0;
     return 1;
 }
 
@@ -1010,7 +999,7 @@ int isDraw(){
 }
 
 int isCheckmate(){
-    if((isCheck(0) && isStalemate(0)) || (isCheck(1) && isStalemate(1))) return 1;
+    if(isCheck() && isStalemate()) return 1;
     else return 0;
 }
 
