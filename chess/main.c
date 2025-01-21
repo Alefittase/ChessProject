@@ -111,11 +111,37 @@ int main(){
         display();
         //Copy the board to the history
         copyToHistory();
-        //Increment the move number
-        moveNumber++;
         //if the king is in check
             //callout the check
         if(isCheck()) printf("Check\n");
+        //Check if the game is over
+        //if the game is over
+            //break the main loop
+        if(moveNumber && isGameOver()){
+            display();
+            switch (isGameOver()){
+            case 1:
+                printf("the game ended in a Checkmate the winner is:\n");
+                if(!turn) printf("Black\n");
+                else printf("white\n");
+                break;
+            case 2:
+                printf("the game ended in a draw due to stalemate\n");
+                break;
+            case 3:
+                printf("the game ended in a draw due to threefold repetition\n");
+                break;
+            case 4:
+                printf("the game ended in a draw due to insufficient material\n");
+                break;
+            default:
+                printf("Error: function \"isGameOver\" returend an invalid value\n");
+                break;
+            };
+            if(!doesWantToPlayAgain()) return 0;
+        }
+        //Increment the move number
+        moveNumber++;
         //While the move is not validated get the player's input
         int moveValidated=0, End=0;
         while(!moveValidated){
@@ -139,6 +165,9 @@ int main(){
             createMoveList();
             doesNotPutKingInCheck();
             //Check if the move is valid (by searching through the moveList)
+
+for(int i=0; moveList[i][0]; i++) printf("%s\n", moveList[i]);
+
             if(findValidMove(move)){
                 //move the piece, and validate the move
                 movePiece(x1, y1, x2, y2);
@@ -148,36 +177,9 @@ int main(){
         }
         //align the captured piece in the top/bottom of the board
         alignCapturedPieces(0,0);
-        //Check if the game is over
-        //if the game is over
-            //break the main loop
         //Switch the turn
         turn=!turn;
-        if(isGameOver()){
-            display();
-            switch (isGameOver()){
-            case 1:
-                printf("the game ended in a Checkmate the winner is:\n");
-                if(!turn) printf("Black\n");
-                else printf("white\n");
-                break;
-            case 2:
-                printf("the game ended in a draw due to stalemate\n");
-                break;
-            case 3:
-                printf("the game ended in a draw due to threefold repetition\n");
-                break;
-            case 4:
-                printf("the game ended in a draw due to insufficient material\n");
-                break;
-            default:
-                printf("Error: function \"isGameOver\" returend an invalid value\n");
-                break;
-            };
-            if(!doesWantToPlayAgain()) return 0;
-        }
         if(End) if(!doesWantToPlayAgain()) return 0;
-
     }
     return 1;
 }
@@ -219,6 +221,7 @@ void displayTurn(){
 void display(){
     //clear the screen and show the new srceen
     system("cls");
+    system("clear");
     displayBoard();
     displayTurn();
 }
@@ -250,19 +253,19 @@ int pieceColor(char piece){
 void alignCapturedPieces(int i, int j){
     int side=pieceColor(board[16][0]);
     //find the location to move the new piece
-    for( ; value(board[14*side+j][i]) > value(board[16][0]);i++)
-        if(i==10){ i=0; j++; }
+    for( ; value(board[14*side+i][j]) > value(board[16][0]);j++)
+        if(j==10){ j=0; i++; }
     
-    // fullDisplay();
+    fullDisplay();
     //put the piece in the desired location and move the next captured piece to the top of the captured pieces buffer
-    board[16][1]=board[14*side+j][i];
-    board[14*side+j][i]=board[16][0];
+    board[16][1]=board[14*side+i][j];
+    board[14*side+i][j]=board[16][0];
     board[16][0]=board[16][1];
     board[16][1]='.';
 
-    // fullDisplay();
+    fullDisplay();
     //go to the next line if the current line is full
-    if(board[14*side+j][i]=='.'){
+    if(board[14*side+i][j]=='.'){
         board[14*side+1][9]=48;
         board[14*side+1][8]=48;
         for(int k=0, p=0; p<2; k++){
@@ -904,20 +907,17 @@ void createMoveList(){
 
 //move function implementation
 int findValidMove(char move[]){
-    int i=0;
-    int x1=move[1]-'a'+1, y1=12-(move[2]-'0');
     //Check if the move is valid
     //If the move is valid
-        //return the index of the valid move in the moveList
-    while(moveList[i][0]){
+        //return 1
+    for(int i=0; moveList[i][0]; i++){
         int flag=1;
         for(int j=0; j<5; j++)
             if(move[j]!=moveList[i][j]) flag=0;
         if(flag) return 1;
-        i++;
     }
     //Else
-        //Display an error message
+        //Display an error message and return 0
     printf("Invalid move\n");
     return 0;
 }
@@ -1005,6 +1005,7 @@ int isCheckmate(){
 
 //reset function implementation
 void gameReset(){
+    moveNumber=0;
     //reset turn
     turn=1;
     //reset board
@@ -1018,7 +1019,6 @@ void gameReset(){
             for(int j=0; j<10; j++)
                 boardHistory[k][i][j]=0;
     }
-    moveNumber=0;
 }
 
 //replay function implementation
