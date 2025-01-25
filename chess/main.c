@@ -145,7 +145,7 @@ int main(){
                 printf("Error: function \"isGameOver\" returend an invalid value\n");
                 break;
             };
-            if(!doesWantToPlayAgain()) return 0;
+            if(!doesNotWantToPlayAgain()) return 0;
         }
         //Increment the move number
         moveNumber++;
@@ -306,7 +306,7 @@ int validMoveListPawn(int moveListIndex){
                     }
                 }
                 //adding the previous square if the pawn has moved before
-                else{
+                else
                     if(board[i+1-2*turn][j]=='.' || (board[i+1-2*turn][j]>='a'-32*turn && board[i+1-2*turn][j]<='z'-32*turn)){
                         moveList[moveListIndex][0]='P'+32*turn;
                         moveList[moveListIndex][1]=j-1+'a';
@@ -315,7 +315,7 @@ int validMoveListPawn(int moveListIndex){
                         moveList[moveListIndex][4]='8'-((i+1-2*turn)-4);
                         moveListIndex++;
                     }
-                }
+            }
     return moveListIndex;
 }
 
