@@ -26,14 +26,14 @@ int pieceColor(char piece);
 void alignCapturedPieces();
 
 //validation functions (creates a list of valid moves for each piece)
-int validMoveListPawn();
-int validMoveListRook();
-int validMoveListKnight();
-int validMoveListBishop();
-int validMoveListQueen();
-int validMoveListKing();
+int validMoveListPawn(int moveListIndex);
+int validMoveListRook(int moveListIndex);
+int validMoveListKnight(int moveListIndex);
+int validMoveListBishop(int moveListIndex);
+int validMoveListQueen(int moveListIndex);
+int validMoveListKing(int moveListIndex);
 
-void checkPawnFirstMove();
+void checkPawnFirstMove(char move[]);
 int isNotOutOfFrame();
 
 void createMoveList();
