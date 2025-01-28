@@ -58,7 +58,6 @@ int numberOfPiecesOnBoard();
 //game over function and its dependencies
 int isStalemate();
 int isThreefoldRepetition();
-int isInsufficientMaterial();
 int isDraw();
 int isCheckmate();
 
@@ -125,9 +124,6 @@ int main(){
                 break;
             case 3:
                 printf("the game ended in a draw due to threefold repetition\n");
-                break;
-            case 4:
-                printf("the game ended in a draw due to insufficient material\n");
                 break;
             default:
                 printf("Error: function \"isGameOver\" returend an invalid value\n");
@@ -938,27 +934,11 @@ int isThreefoldRepetition(){
     }
     return 0;
 }
-//-------------------------------------------------------------------------------------------------------------------------
-int isInsufficientMaterial(){
-    int state=0;
-    if(numberOfPiecesOnBoard()==2) return 1;
-    if(numberOfPiecesOnBoard()<7){
-        for(int i=4; i<12; i++){
-            for(int j=1; j<9; j++){
-                //returns '0' after finding the first queen, rook, or pawn
-                if(board[i][j]=='Q' || board[i][j]=='q' || board[i][j]=='R' || board[i][j]=='r' || board[i][j]=='P' || board[i][j]=='p') return 0;
-
-            }
-        }
-    }
-    return state;
-}
 
 int isDraw(){
     //check if the game is a draw
     if(isStalemate()) return 2;
     else if(isThreefoldRepetition()) return 3;
-    // else if(isInsufficientMaterial()) return 4;
     //not a draw
     else return 0;
 }
