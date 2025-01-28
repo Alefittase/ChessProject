@@ -3,13 +3,11 @@
 #include <stdlib.h>
 
 //definition for colors
-#define BlackOdd(string) "\x1b[40m\x1b[92m" string "\x1b[0m"
-#define WhiteOdd(string) "\x1b[40m\x1b[31m" string "\x1b[0m"
-#define BlackEven(string) "\x1b[47m\x1b[92m" string "\x1b[0m"
-#define WhiteEven(string) "\x1b[47m\x1b[31m" string "\x1b[0m"
+#define BlackOdd(string) "\x1b[40m\x1b[31m" string "\x1b[0m"
+#define WhiteOdd(string) "\x1b[40m\x1b[92m" string "\x1b[0m"
+#define BlackEven(string) "\x1b[47m\x1b[31m" string "\x1b[0m"
+#define WhiteEven(string) "\x1b[47m\x1b[92m" string "\x1b[0m"
 #define RestOfTheBoard(string) "\x1b[44m" string "\x1b[0m"
-
-#define printMoveList for(int i=0; moveList[i][0]; i++) printf("%s\n", moveList[i]);
 
 //Display function and its dependencies
 void displayBoard();
@@ -25,7 +23,7 @@ int value(char piece);
 int pieceColor(char piece);
 
 //captured pieces alignment function
-void alignCapturedPieces(int i, int j);
+void alignCapturedPieces();
 
 //validation functions (creates a list of valid moves for each piece)
 int validMoveListPawn();
@@ -106,24 +104,14 @@ int movedPawnFlag[2][10];
 int main(){
     //While the game is not over
     while(1){
-        //Display the board
-        display();
         //Copy the board to the history
         copyToHistory();
-        //create the valid move list
-            //flush the moveList
+        //flush the moveList
         flushMoveList();
+        //create the valid move list
         createMoveList();
         doesNotPutKingInCheck();
-
-        // printMoveList
-
-        //if the king is in check
-            //callout the check
-        if(isCheck()) printf("Check\n");
-        //Check if the game is over
-        //if the game is over
-            //break the main loop
+        //Check if the game is over, break the main loop
         if(moveNumber && isGameOver()){
             display();
             switch (isGameOver()){
@@ -150,13 +138,18 @@ int main(){
         //Increment the move number
         moveNumber++;
         //While the move is not validated get the player's input
-        int moveValidated=0, End=0;
+        int moveValidated=0, End=0, flagForMoveValidationMessage=0;
         while(!moveValidated){
+            //display the board
+            display();
+            //if the king is in check, callout the check
+            if(isCheck()) printf("Check\n");
             int x1, x2, y1, y2, valid=0;
             char move[5];
             //receive the player's input
-            printf("To exit the game, enter \"End\"\n");
-            printf("Enter the move: ");
+            printf("To exit the game, enter \"End\".\n");
+            if(flagForMoveValidationMessage) printf("The move you entered is invalid.\nplease enter a valid move: ");
+            else printf("Enter your move: ");
             scanf("%s", move);
             //check for manual exit
             if(move[0]=='E' && move[1]=='n' && move[2]=='d'){ End=1; break; }
@@ -171,9 +164,11 @@ int main(){
                 //update the pawns if it's their first move
                 if((move[0]=='P' || move[0]=='p') && movedPawnFlag[turn][move[1]-'a'+1]!=1) movedPawnFlag[turn][move[1]-'a'+1]=1; 
             }
+            flagForMoveValidationMessage=1;
         }
+        pawnPromotion();
         //align the captured piece in the top/bottom of the board
-        alignCapturedPieces(0,0);
+        alignCapturedPieces();
         //Switch the turn
         turn=!turn;
         
@@ -183,7 +178,6 @@ int main(){
     return 1;
 }
 
-//Display functions implementation
 void displayBoard(){
     //print the board
     for(int i=0; i<16; i++){
@@ -246,39 +240,42 @@ int pieceColor(char piece){
     if(piece>96) return 1;
     return 0;
 }
-//-------------------------------------------------------------------------------------------
-//captured pieces alignment function implementation
-void alignCapturedPieces(int i, int j){
-    int side=pieceColor(board[16][0]);
-    //find the location to move the new piece
-    for( ; value(board[14*side+j][i]) > value(board[16][0]);i++)
-        if(i==10){ i=0; j++; }
-    
-    // fullDisplay();
-    //put the piece in the desired location and move the next captured piece to the top of the captured pieces buffer
-    board[16][1]=board[14*side+j][i];
-    board[14*side+j][i]=board[16][0];
-    board[16][0]=board[16][1];
-    board[16][1]='.';
 
-    // fullDisplay();
-    //go to the next line if the current line is full
-    if(board[14*side+j][i]=='.'){
-        board[14*side+1][9]=48;
-        board[14*side+1][8]=48;
-        for(int k=0, p=0; p<2; k++){
-            if(k==10){ k=0; p++; }
-            board[14*side+1][9]+=value(board[14*side+p][k]);
-            if(board[14*side+1][9]==58){
-                board[14*side+1][9]=48;
-                board[14*side+1][8]++;
-            }
+//captured pieces alignment function implementation
+void alignCapturedPieces(){
+    int side=pieceColor(board[16][0]), flag=0;
+    char tmp[2][10]={0};
+    //copy the curent list of captured pieces to a temperary matrix (tmp)
+    for(int j=0, i=0; i<2; j++){
+        if(j==10){j=0; i++;}
+        if(i==2) break;
+        tmp[i][j]= board[14*side+i][j];
+        for(int k=0, l=0; l<2; k++){
+            if(k==10){k=0; l++;}
+            if(l==2) break;
         }
-        return;
     }
-    //recursive call to align the next captured piece in case the piece is not the last one
-    alignCapturedPieces(i, j);
-    return;
+    //merge tmp (periviously captured pieces) and board[16][0] (newly captured piece)
+    for(int j=0, i=0; i<2; j++){
+        if(j==10){j=0; i++;}
+        if(i==2) break;
+        if(value(tmp[i][j])<value(board[16][0]) && !flag){
+            board[14*side+i][j]=board[16][0];
+            flag=1;
+        }else
+            board[14*side+i][j]=tmp[i][j];
+    }
+    //calulate the material points
+    board[14*side+1][9]=48;
+    board[14*side+1][8]=48;
+    for(int j=0, i=0; i<2; j++){
+        if(j==10){j=0; i++;}
+        board[14*side+1][9]+=value(board[14*side+i][j]);
+        if(board[14*side+1][9]==58){
+            board[14*side+1][9]=48;
+            board[14*side+1][8]++;
+        }
+    }
 }
 
 //validation functions implementation
@@ -417,32 +414,32 @@ int validMoveListKnight(int moveListIndex){
                     moveList[moveListIndex][0]='N'+32*turn;
                     moveList[moveListIndex][1]=j-1+'a';
                     moveList[moveListIndex][2]='8'-(i-4);
-                    moveList[moveListIndex][3]=(j+2)-1+'a';
-                    moveList[moveListIndex][4]='8'-((i+3)-4);
+                    moveList[moveListIndex][3]=(j+3)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+2)-4);
                     moveListIndex++;
                 }
                 if(j-3>0 && (board[i+2][j-3]=='.' || (board[i+2][j-3]>='a'-32*turn && board[i+2][j-3]<='z'-32*turn))){
                     moveList[moveListIndex][0]='N'+32*turn;
                     moveList[moveListIndex][1]=j-1+'a';
                     moveList[moveListIndex][2]='8'-(i-4);
-                    moveList[moveListIndex][3]=(j-2)-1+'a';
-                    moveList[moveListIndex][4]='8'-((i+3)-4);
+                    moveList[moveListIndex][3]=(j-3)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i+2)-4);
                     moveListIndex++;
                 }
                 if(j+3<9 && (board[i-2][j+3]=='.' || (board[i-2][j+3]>='a'-32*turn && board[i-2][j+3]<='z'-32*turn))){
                     moveList[moveListIndex][0]='N'+32*turn;
                     moveList[moveListIndex][1]=j-1+'a';
                     moveList[moveListIndex][2]='8'-(i-4);
-                    moveList[moveListIndex][3]=(j+2)-1+'a';
-                    moveList[moveListIndex][4]='8'-((i-3)-4);
+                    moveList[moveListIndex][3]=(j+3)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-2)-4);
                     moveListIndex++;
                 }
                 if(j-3>0 && (board[i-2][j-3]=='.' || (board[i-2][j-3]>='a'-32*turn && board[i-2][j-3]<='z'-32*turn))){
                     moveList[moveListIndex][0]='N'+32*turn;
                     moveList[moveListIndex][1]=j-1+'a';
                     moveList[moveListIndex][2]='8'-(i-4);
-                    moveList[moveListIndex][3]=(j-2)-1+'a';
-                    moveList[moveListIndex][4]='8'-((i-3)-4);
+                    moveList[moveListIndex][3]=(j-3)-1+'a';
+                    moveList[moveListIndex][4]='8'-((i-2)-4);
                     moveListIndex++;
                 }
             }
@@ -797,6 +794,7 @@ int isCheck(){
     //switch the turn
     turn=!turn;
     //create a new move list
+    flushMoveList();
     createMoveList();
     //check if the opponent would have the opportunity to capture the king
     for(int i=0; moveList[i][0]; i++)
@@ -825,11 +823,11 @@ int doesNotPutKingInCheck(){
         movePiece(tmpX1, tmpY1, tmpX2, tmpY2);
         //if it was check, then the move isn't valid and therefore is deleted* from the moveList
         if(isCheck()){
-            moveList[k][0]=' ';
-            moveList[k][1]=' ';
-            moveList[k][2]='!';
-            moveList[k][3]=' ';
-            moveList[k][4]=' ';
+            moveList[k][0]='!';
+            // moveList[k][1]=' ';
+            // moveList[k][2]='!';
+            // moveList[k][3]=' ';
+            // moveList[k][4]=' ';
         }
         //return the board into the previous state
         for(int i=0; i<20; i++)
@@ -848,11 +846,11 @@ int isNotOutOfFrame(){
     //look for any moves that would go out of frame, delete* them
     for(int i=0; moveList[i][0]; i++)
         if(moveList[i][3]<'a' || moveList[i][3]>'h' || moveList[i][4]<'1' || moveList[i][4]>'8'){
-            moveList[i][0]=' ';
-            moveList[i][1]=' ';
-            moveList[i][2]=' ';
-            moveList[i][3]=' ';
-            moveList[i][4]=' ';
+            moveList[i][0]='@';
+            // moveList[i][1]=' ';
+            // moveList[i][2]=' ';
+            // moveList[i][3]=' ';
+            // moveList[i][4]=' ';
         }
 }
 
@@ -877,8 +875,6 @@ int findValidMove(char move[]){
         for(int j=0; j<5; j++) if(move[j]!=moveList[i][j]) flag=0;
         if(flag) return 1;
     }
-    //Else, Display an error message
-    printf("Invalid move\n");
     return 0;
 }
 
@@ -895,7 +891,7 @@ void pawnPromotion(){
         for(int j=1; j<9; j++)
             if(board[i][j]=='P'+(i/11)*32)
                 while(promotionTarget){
-                    printf("Choose the piece to promote to: (%c %c %c %c)", 'B'+(i/11)*32, 'N'+(i/11)*32, 'R'+(i/11)*32, 'Q'+(i/11)*32);
+                    printf("Choose the piece to promote to (%c/%c/%c/%c): ", 'B'+(i/11)*32, 'N'+(i/11)*32, 'R'+(i/11)*32, 'Q'+(i/11)*32);
                     scanf(" %c", &promotionTarget);
                     if(promotionTarget=='B'+(i/11)*32 || promotionTarget=='N'+(i/11)*32 || promotionTarget=='R'+(i/11)*32 || promotionTarget=='Q'+(i/11)*32){
                         board[i][j]=promotionTarget;
@@ -925,7 +921,7 @@ int numberOfPiecesOnBoard(){
 int isStalemate(){
     //checks if there are any valid moves
     for(int i=0; i<12500; i++)
-        if(moveList[i][0]!=' ' && moveList[i][0]!=0)
+        if(moveList[i][0]!=' ' && moveList[i][0]!=0 && moveList[i][0]!='!' && moveList[i][0]!='@')
             return 0;
     return 1;
 }
